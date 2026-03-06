@@ -286,10 +286,11 @@ export default function POSPage() {
         let shareHtml = '';
         if (type === 'BILL') {
           shareHtml = `
-              <div class="no-print" style="text-align: center; margin: 15px 0;">
-                <button id="wa-share-btn" style="background-color: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-family: sans-serif; font-weight: bold; border: none; cursor: pointer;">Send Bill Link on WhatsApp</button>
-                <button onclick="window.print()" style="margin-left: 10px; background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-family: sans-serif; font-weight: bold; border: none; cursor: pointer;">Print Again</button>
-                <p id="share-status" style="margin-top: 8px; font-size: 14px; font-family: sans-serif; color: #4b5563;"></p>
+              <div class="no-print" style="text-align: center; margin: 15px 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                <button id="wa-share-btn" style="background-color: #25D366; color: white; padding: 10px 18px; border-radius: 5px; font-family: sans-serif; font-weight: bold; border: none; cursor: pointer;">📲 Send on WhatsApp</button>
+                <button onclick="window.print()" style="background-color: #4F46E5; color: white; padding: 10px 18px; border-radius: 5px; font-family: sans-serif; font-weight: bold; border: none; cursor: pointer;">🖨 Print Again</button>
+                <button onclick="window.close()" style="background-color: #f3f4f6; color: #374151; padding: 10px 18px; border-radius: 5px; font-family: sans-serif; font-weight: bold; border: 1px solid #d1d5db; cursor: pointer;">← Back to POS</button>
+                <p id="share-status" style="width:100%; margin-top: 4px; font-size: 13px; font-family: sans-serif; color: #4b5563;"></p>
               </div>
             `;
         } else {
@@ -495,7 +496,7 @@ export default function POSPage() {
 
         {/* Floating Calculator Modal (if item selected) */}
         {selectedItem && (
-          <div className="absolute bottom-6 left-6 right-[420px] bg-white rounded-2xl shadow-2xl border border-indigo-100 p-6 z-30 animate-in slide-in-from-bottom-10 fade-in duration-200">
+          <div className="absolute bottom-6 left-6 right-[390px] bg-white rounded-2xl shadow-2xl border border-indigo-100 p-6 z-30 animate-in slide-in-from-bottom-10 fade-in duration-200">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-xl font-bold border-b-2 border-indigo-200 pb-1 inline-block text-gray-800">{selectedItem.name}</h3>
@@ -546,8 +547,8 @@ export default function POSPage() {
               </div>
             )}
 
-            <div className="flex gap-4 items-end">
-              <div className="flex-1 min-w-0">
+            <div className="flex gap-3 items-end mt-2">
+              <div className="flex-1">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   {sellType === 'pc' ? 'Quantity (Pieces)' : 'Weight (Grams)'}
                 </label>
@@ -557,7 +558,8 @@ export default function POSPage() {
                     type="number"
                     value={inputWeight}
                     onChange={(e) => handleWeightChange(e.target.value)}
-                    className="w-full min-w-[140px] pl-4 pr-12 py-3 border-2 border-indigo-100 rounded-xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-xl font-bold text-gray-800 transition-all placeholder:font-normal placeholder:text-gray-300"
+                    style={{ minWidth: '160px' }}
+                    className="w-full pl-4 pr-12 py-3 border-2 border-indigo-100 rounded-xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-xl font-bold text-gray-800 transition-all placeholder:font-normal placeholder:text-gray-300"
                     placeholder="0"
                     min={sellType === 'pc' ? '1' : '0.1'}
                     step={sellType === 'pc' ? '1' : '10'}
@@ -574,10 +576,10 @@ export default function POSPage() {
                   </span>
                 </div>
               </div>
-              <div className="flex items-center justify-center text-gray-300 pb-3">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+              <div className="flex items-center justify-center text-gray-300 pb-3 shrink-0">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Amount (₹)</label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</span>
@@ -586,7 +588,8 @@ export default function POSPage() {
                     type="number"
                     value={inputPrice}
                     onChange={(e) => handlePriceChange(e.target.value)}
-                    className="w-full min-w-[140px] pl-8 pr-4 py-3 border-2 border-indigo-100 rounded-xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-xl font-bold text-gray-800 transition-all placeholder:font-normal placeholder:text-gray-300"
+                    style={{ minWidth: '160px' }}
+                    className="w-full pl-8 pr-4 py-3 border-2 border-indigo-100 rounded-xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-xl font-bold text-gray-800 transition-all placeholder:font-normal placeholder:text-gray-300"
                     placeholder="0.00"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') addToCart();
@@ -620,21 +623,21 @@ export default function POSPage() {
             Customer Details
           </h2>
           <div className="space-y-2">
-            {/* Name + Mobile on one row */}
+            {/* Name + Mobile on one row, equal width */}
             <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Customer Name"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="flex-1 min-w-0 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
+                className="flex-1 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
               />
               <input
                 type="tel"
                 placeholder="Mobile"
                 value={customerMobile}
                 onChange={(e) => setCustomerMobile(e.target.value)}
-                className="w-28 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
+                className="flex-1 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
               />
             </div>
             <input

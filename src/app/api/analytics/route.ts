@@ -47,7 +47,7 @@ export async function GET(request: Request) {
     // 3. Get Logs
     const logsQuery = `
       SELECT Transactions.*, 
-             json_group_array(json_object('name', TransactionItems.item_name, 'quantity_kg', TransactionItems.quantity_kg, 'calculated_price', TransactionItems.calculated_price)) as items
+             json_group_array(json_object('name', TransactionItems.item_name, 'quantity_kg', TransactionItems.quantity_kg, 'calculated_price', TransactionItems.calculated_price, 'selling_type', TransactionItems.selling_type, 'selling_qty', TransactionItems.selling_qty)) as items
       FROM Transactions
       LEFT JOIN TransactionItems ON Transactions.id = TransactionItems.transaction_id
       ${dateFilter}
