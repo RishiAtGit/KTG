@@ -455,6 +455,7 @@ export default function POSPage() {
                 value={loginPassword}
                 onChange={(e) => { setLoginPassword(e.target.value); setLoginError(false); }}
                 autoFocus
+                autoComplete="new-password"
                 className={`w-full px-4 py-3 rounded-xl bg-white/10 border text-white placeholder:text-indigo-300 outline-none text-center text-lg tracking-widest transition-all ${loginError ? 'border-red-400 bg-red-500/10' : 'border-white/20 focus:border-indigo-400 focus:bg-white/15'
                   }`}
               />
