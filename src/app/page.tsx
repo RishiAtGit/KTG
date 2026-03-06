@@ -243,11 +243,12 @@ export default function POSPage() {
     items: cart
   });
 
-  const completeOrder = async () => {
+  const completeOrder = async (modeOverride?: 'Cash' | 'Online') => {
     if (cart.length === 0) return alert('Cart is empty!');
-    if (!paymentMode) return alert('Please select a payment mode first!');
+    const mode = modeOverride || paymentMode;
+    if (!mode) return alert('Please select a payment mode first!');
 
-    const payload = generatePayload();
+    const payload = { ...generatePayload(), payment_mode: mode };
 
     try {
       const res = await fetch('/api/checkout', {
@@ -261,6 +262,7 @@ export default function POSPage() {
         setCart([]);
         setCustomerName('');
         setCustomerMobile('');
+        setCustomerGstin('');
         setDiscountValue(0);
         setPaymentMode(null);
         setReceiptNo('');
@@ -704,51 +706,46 @@ export default function POSPage() {
             />
           </div>
 
-          {/* Print Options */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          {/* 3-Button Checkout Row: Print KOT | Cash | Online */}
+          <div className="grid grid-cols-3 gap-2 pt-2">
+            {/* Print KOT */}
             <button
               onClick={() => executePrint('KOT')}
               disabled={cart.length === 0}
-              className="w-full bg-amber-50 hover:bg-amber-100 disabled:opacity-50 disabled:hover:bg-amber-50 border border-amber-200 text-amber-700 font-bold py-3 rounded-xl transition-colors flex flex-col items-center justify-center gap-1 shadow-sm"
+              className="bg-amber-50 hover:bg-amber-100 disabled:opacity-50 border border-amber-200 text-amber-700 font-bold py-4 rounded-xl transition-colors flex flex-col items-center justify-center gap-1 shadow-sm text-xs"
             >
-              <Printer size={20} /> Print KOT
+              <Printer size={20} />
+              Print KOT
             </button>
 
+            {/* Cash */}
             <button
-              onClick={() => executePrint('BILL')}
+              onClick={async () => {
+                if (cart.length === 0) return;
+                await executePrint('BILL');
+                completeOrder('Cash');
+              }}
               disabled={cart.length === 0}
-              className="w-full bg-indigo-50 hover:bg-indigo-100 disabled:opacity-50 disabled:hover:bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold py-3 rounded-xl transition-colors flex flex-col items-center justify-center gap-1 shadow-sm"
+              className="bg-emerald-50 hover:bg-emerald-100 disabled:opacity-50 border border-emerald-300 text-emerald-700 font-bold py-4 rounded-xl transition-colors flex flex-col items-center justify-center gap-1 shadow-sm text-xs"
             >
-              <PrinterIcon size={20} /> Print Final Bill
+              <Banknote size={20} />
+              Cash
+            </button>
+
+            {/* Online */}
+            <button
+              onClick={async () => {
+                if (cart.length === 0) return;
+                await executePrint('BILL');
+                completeOrder('Online');
+              }}
+              disabled={cart.length === 0}
+              className="bg-purple-50 hover:bg-purple-100 disabled:opacity-50 border border-purple-300 text-purple-700 font-bold py-4 rounded-xl transition-colors flex flex-col items-center justify-center gap-1 shadow-sm text-xs"
+            >
+              <CreditCard size={20} />
+              Online
             </button>
           </div>
-
-          {/* Payment Modes */}
-          <div className="mb-6 pt-5 border-t border-gray-100">
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Select Payment Mode <span className="text-red-500">*</span></label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => setPaymentMode('Cash')}
-                className={`py-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1 font-bold text-sm transition-all ${paymentMode === 'Cash' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 shadow-md ring-2 ring-indigo-200 ring-offset-1' : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:bg-gray-50'}`}
-              >
-                <Banknote size={24} /> Cash
-              </button>
-              <button
-                onClick={() => setPaymentMode('Online')}
-                className={`py-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1 font-bold text-sm transition-all ${paymentMode === 'Online' ? 'border-purple-600 bg-purple-50 text-purple-700 shadow-md ring-2 ring-purple-200 ring-offset-1' : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:bg-gray-50'}`}
-              >
-                <CreditCard size={24} /> Online
-              </button>
-            </div>
-          </div>
-
-          <button
-            onClick={completeOrder}
-            disabled={cart.length === 0 || !paymentMode}
-            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 disabled:from-gray-300 disabled:to-gray-300 disabled:text-gray-500 text-white py-4 rounded-xl font-bold shadow-lg shadow-emerald-200 disabled:shadow-none transition-all flex items-center justify-center gap-2 text-lg"
-          >
-            Complete Order (F9) <Check size={20} className="ml-2" />
-          </button>
         </div>
 
       </div>
