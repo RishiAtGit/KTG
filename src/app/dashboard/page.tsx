@@ -190,8 +190,8 @@ export default function Dashboard() {
                     </div>
 
                     {/* Top Sellers */}
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col">
-                        <h2 className="text-lg font-bold text-gray-800 mb-6">Top Selling Items</h2>
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col h-[380px]">
+                        <h2 className="text-lg font-bold text-gray-800 mb-4 shrink-0">Top Selling Items</h2>
                         <div className="flex-1 overflow-y-auto pr-2">
                             {loading ? (
                                 <div className="w-full h-full flex items-center justify-center text-gray-400">Loading top items...</div>
@@ -249,9 +249,9 @@ export default function Dashboard() {
                             </button>
                         </div>
                     </div>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-gray-50 text-gray-500 uppercase font-semibold text-xs py-3 border-b border-gray-200">
+                            <thead className="bg-gray-50 text-gray-500 uppercase font-semibold text-xs py-3 border-b border-gray-200 sticky top-0 z-10">
                                 <tr>
                                     <th className="px-6 py-4">Time</th>
                                     <th className="px-6 py-4">Receipt No.</th>
