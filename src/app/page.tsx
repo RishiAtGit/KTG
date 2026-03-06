@@ -474,7 +474,7 @@ export default function POSPage() {
                 {/* Stock badge */}
                 <div className="flex justify-between items-start mb-1">
                   <div className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${item.track_stock === false ? 'bg-gray-100 text-gray-600' : (item.stock_kg && item.stock_kg > 5 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600')}`}>
-                    {item.track_stock === false ? '∞' : `${item.stock_kg ?? 0} ${item.unit === 'pc' ? 'pc' : 'kg'}`}
+                    {item.track_stock === false ? '∞' : item.unit === 'pc' ? `${Math.round(item.stock_kg ?? 0)} pc` : `${Number(item.stock_kg ?? 0).toFixed(2)} kg`}
                   </div>
                 </div>
                 <h3 className="font-semibold text-gray-800 text-sm leading-tight mb-1.5 line-clamp-2">{item.name}</h3>
@@ -627,17 +627,17 @@ export default function POSPage() {
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Customer Name"
+                placeholder="Name"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="flex-1 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
+                className="flex-1 basis-0 min-w-0 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
               />
               <input
                 type="tel"
                 placeholder="Mobile"
                 value={customerMobile}
                 onChange={(e) => setCustomerMobile(e.target.value)}
-                className="flex-1 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
+                className="flex-1 basis-0 min-w-0 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
               />
             </div>
             <input
