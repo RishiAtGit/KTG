@@ -248,15 +248,53 @@ export default function AdminPage() {
             return;
         }
 
-        const ws = XLSX.utils.json_to_sheet(data.logs.map((log: any) => {
-            const itemsArr = typeof log.items === 'string' ? JSON.parse(log.items || '[]') : (log.items || []);
-            return {
-                'Transaction ID': log.id,
-                'Date': new Date(log.created_at).toLocaleString(),
-                'Total Amount (₹)': log.total_amount,
-                'Items': itemsArr.map((item: any) => `${item.name} (${item.quantity_kg}${item.unit === 'pc' ? ' pc' : 'kg'} @ ₹${item.calculated_price})`).join('; '),
-            };
-        }));
+        const rows: any[] = [];
+
+        data.logs.forEach((log: any) => {
+            const itemsArr: any[] = typeof log.items === 'string' ? JSON.parse(log.items || '[]') : (log.items || []);
+            const dt = new Date(log.created_at);
+            const dateStr = dt.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const timeStr = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+            itemsArr.forEach((item: any) => {
+                // Quantity display: if piece — "5 pc (250g)", if weight — "1.50 kg"
+                let qtyDisplay = '';
+                if (item.selling_type === 'pc' && item.selling_qty != null) {
+                    const weightG = Math.round((item.quantity_kg || 0) * 1000);
+                    qtyDisplay = `${item.selling_qty} pc (${weightG}g)`;
+                } else {
+                    const kgVal = Number(item.quantity_kg || 0).toFixed(2);
+                    qtyDisplay = `${kgVal} kg`;
+                }
+
+                rows.push({
+                    'Bill No': log.receipt_no,
+                    'Date': dateStr,
+                    'Time': timeStr,
+                    'Customer': log.customer_name || 'Walk-in',
+                    'Item': item.name,
+                    'Quantity': qtyDisplay,
+                    'Amount (₹)': Number(item.calculated_price || 0).toFixed(2),
+                });
+            });
+        });
+
+        if (rows.length === 0) {
+            alert('No item-level data found to export.');
+            return;
+        }
+
+        const ws = XLSX.utils.json_to_sheet(rows);
+        // Set column widths
+        ws['!cols'] = [
+            { wch: 14 }, // Bill No
+            { wch: 12 }, // Date
+            { wch: 10 }, // Time
+            { wch: 18 }, // Customer
+            { wch: 22 }, // Item
+            { wch: 16 }, // Quantity
+            { wch: 12 }, // Amount
+        ];
 
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Sales Report');
