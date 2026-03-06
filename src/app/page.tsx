@@ -1,9 +1,14 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
-import { ShoppingCart, LogOut, UserCog, BarChart3, Search, Trash2, Printer, Check, Smartphone, PrinterIcon, Share2, CreditCard, Banknote } from 'lucide-react';
+import { ShoppingCart, LogOut, UserCog, BarChart3, Search, Trash2, Printer, Check, Smartphone, PrinterIcon, Share2, CreditCard, Banknote, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { v4 as uuidv4 } from 'uuid';
 import ReceiptTemplate from '@/components/ReceiptTemplate';
+
+// ─── POS Password ─────────────────────────────────────────────────────────────
+const POS_PASSWORD = 'ktg2024'; // Change this to your desired password
+const POS_AUTH_KEY = 'pos_authenticated';
+// ─────────────────────────────────────────────────────────────────────────────
 
 interface Item {
   id: number;
@@ -26,6 +31,39 @@ interface CartItem extends Item {
 }
 
 export default function POSPage() {
+  // ── Auth gate ──────────────────────────────────────────────────────────────
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem(POS_AUTH_KEY);
+      if (stored === 'true') setAuthenticated(true);
+      setAuthChecked(true);
+    }
+  }, []);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loginPassword === POS_PASSWORD) {
+      sessionStorage.setItem(POS_AUTH_KEY, 'true');
+      setAuthenticated(true);
+      setLoginError(false);
+    } else {
+      setLoginError(true);
+      setLoginPassword('');
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem(POS_AUTH_KEY);
+    setAuthenticated(false);
+    setLoginPassword('');
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
   const [items, setItems] = useState<Item[]>([]);
   const [filteredItems, setFilteredItems] = useState<Item[]>([]);
   const [search, setSearch] = useState('');
@@ -393,6 +431,52 @@ export default function POSPage() {
     window.open(url, '_blank');
   };
 
+  // Show nothing until auth is checked (avoids flash)
+  if (!authChecked) return null;
+
+  // ── Login Gate ──────────────────────────────────────────────────────────────
+  if (!authenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 flex items-center justify-center p-4 font-sans">
+        <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 w-full max-w-sm shadow-2xl border border-white/20">
+          <div className="flex flex-col items-center mb-8">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center shadow-xl mb-4">
+              <Lock size={28} className="text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-white">KTG Sweets POS</h1>
+            <p className="text-indigo-200 text-sm mt-1">Enter your password to continue</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <div className="relative">
+              <input
+                type="password"
+                placeholder="Password"
+                value={loginPassword}
+                onChange={(e) => { setLoginPassword(e.target.value); setLoginError(false); }}
+                autoFocus
+                className={`w-full px-4 py-3 rounded-xl bg-white/10 border text-white placeholder:text-indigo-300 outline-none text-center text-lg tracking-widest transition-all ${loginError ? 'border-red-400 bg-red-500/10' : 'border-white/20 focus:border-indigo-400 focus:bg-white/15'
+                  }`}
+              />
+            </div>
+            {loginError && (
+              <p className="text-red-300 text-sm text-center -mt-2 animate-in fade-in">Incorrect password. Try again.</p>
+            )}
+            <button
+              type="submit"
+              className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-900/50 transition-all active:scale-95"
+            >
+              Unlock POS
+            </button>
+          </form>
+
+          <p className="text-center text-indigo-400 text-xs mt-6">KTG Family Restaurant &bull; Billing System</p>
+        </div>
+      </div>
+    );
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
 
@@ -412,6 +496,14 @@ export default function POSPage() {
             <UserCog size={22} />
           </Link>
         </div>
+        {/* Logout */}
+        <button
+          onClick={handleLogout}
+          title="Lock POS"
+          className="mt-auto flex justify-center text-indigo-400 hover:text-red-300 p-3 mx-2 rounded-xl hover:bg-white/10 transition-all"
+        >
+          <Lock size={20} />
+        </button>
       </div>
 
       {/* Main Content Area */}
