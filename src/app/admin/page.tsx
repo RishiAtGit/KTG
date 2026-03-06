@@ -498,7 +498,7 @@ export default function AdminPage() {
                                                 </div>
                                                 <div className="flex items-center gap-4">
                                                     <div className={`px-3 py-1 text-sm font-semibold rounded-full border ${item.stock_kg && item.stock_kg > 5 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
-                                                        {item.stock_kg ?? 0} kg stock
+                                                        {item.unit === 'pc' ? `${Math.round(item.stock_kg ?? 0)} pc stock` : `${Number(item.stock_kg ?? 0).toFixed(2)} kg stock`}
                                                     </div>
 
                                                     <div className="flex items-center gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">

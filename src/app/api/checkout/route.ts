@@ -29,8 +29,8 @@ export async function POST(request: Request): Promise<NextResponse> {
                 });
 
                 await transaction.execute({
-                    sql: `UPDATE Items SET stock_kg = stock_kg - ? WHERE name = ?`,
-                    args: [item.quantity_kg, item.name]
+                    sql: `UPDATE Items SET stock_kg = ROUND(stock_kg - ?, 4) WHERE name = ?`,
+                    args: [Math.round(item.quantity_kg * 10000) / 10000, item.name]
                 });
             }
 
