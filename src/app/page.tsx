@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import ReceiptTemplate from '@/components/ReceiptTemplate';
 
 // ─── POS Password ─────────────────────────────────────────────────────────────
-const POS_PASSWORD = 'ktg2024'; // Change this to your desired password
+const POS_PASSWORD = 'ktg2026'; // Change this to your desired password
 const POS_AUTH_KEY = 'pos_authenticated';
 // ─────────────────────────────────────────────────────────────────────────────
 
