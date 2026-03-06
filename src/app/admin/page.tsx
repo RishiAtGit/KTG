@@ -221,7 +221,7 @@ export default function AdminPage() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(formattedItems),
+                    body: JSON.stringify({ items: formattedItems }),
                 });
 
                 if (res.ok) {
