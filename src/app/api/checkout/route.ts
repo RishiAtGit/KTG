@@ -23,9 +23,9 @@ export async function POST(request: Request): Promise<NextResponse> {
 
             for (const item of items) {
                 await transaction.execute({
-                    sql: `INSERT INTO TransactionItems (transaction_id, item_name, quantity_kg, calculated_price) 
-                          VALUES (?, ?, ?, ?)`,
-                    args: [transactionId, item.name, item.quantity_kg, item.calculated_price]
+                    sql: `INSERT INTO TransactionItems (transaction_id, item_name, quantity_kg, calculated_price, selling_type, selling_qty) 
+                          VALUES (?, ?, ?, ?, ?, ?)`,
+                    args: [transactionId, item.name, item.quantity_kg, item.calculated_price, item.selling_type || 'kg', item.selling_qty || null]
                 });
 
                 await transaction.execute({

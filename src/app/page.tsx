@@ -468,16 +468,21 @@ export default function POSPage() {
                   setInputPrice('');
                   setTimeout(() => weightInputRef.current?.focus(), 50);
                 }}
-                className={`bg-white rounded-2xl p-4 shadow-sm border-2 cursor-pointer transition-all hover:shadow-md ${selectedItem?.id === item.id ? 'border-indigo-500 ring-4 ring-indigo-50/50' : focusedItemIndex === index ? 'border-indigo-400 ring-2 ring-indigo-100' : 'border-transparent hover:border-gray-200'}`}
+                className={`bg-white rounded-xl p-3 shadow-sm border-2 cursor-pointer transition-all hover:shadow-md ${selectedItem?.id === item.id ? 'border-indigo-500 ring-4 ring-indigo-50/50' : focusedItemIndex === index ? 'border-indigo-400 ring-2 ring-indigo-100' : 'border-transparent hover:border-gray-200'}`}
               >
-                <div className="h-24 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl mb-3 flex items-center justify-center relative overflow-hidden">
-                  <div className={`absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${item.track_stock === false ? 'bg-gray-100 text-gray-600' : (item.stock_kg && item.stock_kg > 5 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600')}`}>
-                    {item.track_stock === false ? '∞' : `${item.stock_kg ?? 0}${item.unit === 'pc' ? 'pc' : 'kg'}`}
+                {/* Stock badge */}
+                <div className="flex justify-between items-start mb-1">
+                  <div className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${item.track_stock === false ? 'bg-gray-100 text-gray-600' : (item.stock_kg && item.stock_kg > 5 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600')}`}>
+                    {item.track_stock === false ? '∞' : `${item.stock_kg ?? 0} ${item.unit === 'pc' ? 'pc' : 'kg'}`}
                   </div>
-                  <span className="text-3xl">🍮</span>
                 </div>
-                <h3 className="font-semibold text-gray-800 line-clamp-1">{item.name}</h3>
-                <p className="text-sm font-medium text-indigo-600 mt-1">₹{item.rate_per_kg}/{item.unit || 'kg'}</p>
+                <h3 className="font-semibold text-gray-800 text-sm leading-tight mb-1.5 line-clamp-2">{item.name}</h3>
+                <div className="flex flex-col gap-0.5">
+                  <p className="text-xs font-medium text-indigo-600">₹{item.rate_per_kg}/kg</p>
+                  {item.piece_price && (
+                    <p className="text-xs font-medium text-emerald-600">₹{item.piece_price}/pc</p>
+                  )}
+                </div>
               </div>
             ))}
             {filteredItems.length === 0 && (
@@ -541,8 +546,8 @@ export default function POSPage() {
               </div>
             )}
 
-            <div className="flex gap-6 items-end">
-              <div className="flex-1">
+            <div className="flex gap-4 items-end">
+              <div className="flex-1 min-w-0">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   {sellType === 'pc' ? 'Quantity (Pieces)' : 'Weight (Grams)'}
                 </label>
@@ -552,7 +557,7 @@ export default function POSPage() {
                     type="number"
                     value={inputWeight}
                     onChange={(e) => handleWeightChange(e.target.value)}
-                    className="w-full pl-4 pr-12 py-3 border-2 border-indigo-100 rounded-xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-xl font-bold text-gray-800 transition-all placeholder:font-normal placeholder:text-gray-300"
+                    className="w-full min-w-[140px] pl-4 pr-12 py-3 border-2 border-indigo-100 rounded-xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-xl font-bold text-gray-800 transition-all placeholder:font-normal placeholder:text-gray-300"
                     placeholder="0"
                     min={sellType === 'pc' ? '1' : '0.1'}
                     step={sellType === 'pc' ? '1' : '10'}
@@ -572,7 +577,7 @@ export default function POSPage() {
               <div className="flex items-center justify-center text-gray-300 pb-3">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Amount (₹)</label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</span>
@@ -581,7 +586,7 @@ export default function POSPage() {
                     type="number"
                     value={inputPrice}
                     onChange={(e) => handlePriceChange(e.target.value)}
-                    className="w-full pl-8 pr-4 py-3 border-2 border-indigo-100 rounded-xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-xl font-bold text-gray-800 transition-all placeholder:font-normal placeholder:text-gray-300"
+                    className="w-full min-w-[140px] pl-8 pr-4 py-3 border-2 border-indigo-100 rounded-xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-xl font-bold text-gray-800 transition-all placeholder:font-normal placeholder:text-gray-300"
                     placeholder="0.00"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') addToCart();
@@ -614,34 +619,31 @@ export default function POSPage() {
           <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4 flex items-center gap-2">
             Customer Details
           </h2>
-          <div className="space-y-3">
-            <div>
+          <div className="space-y-2">
+            {/* Name + Mobile on one row */}
+            <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Customer Name"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full text-sm px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
+                className="flex-1 min-w-0 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
               />
-            </div>
-            <div>
               <input
                 type="tel"
-                placeholder="Mobile Number"
+                placeholder="Mobile"
                 value={customerMobile}
                 onChange={(e) => setCustomerMobile(e.target.value)}
-                className="w-full text-sm px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
+                className="w-28 text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900"
               />
             </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Customer GSTIN (Optional)"
-                value={customerGstin}
-                onChange={(e) => setCustomerGstin(e.target.value)}
-                className="w-full text-sm px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900 uppercase placeholder:normal-case"
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="Customer GSTIN (Optional)"
+              value={customerGstin}
+              onChange={(e) => setCustomerGstin(e.target.value)}
+              className="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none transition-all text-gray-900 uppercase placeholder:normal-case"
+            />
           </div>
         </div>
 

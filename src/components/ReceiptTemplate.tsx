@@ -32,7 +32,6 @@ export default function ReceiptTemplate({ type, payload }: ReceiptProps) {
                 </p>
                 <p className="text-[11px] mt-0.5">Mobile: 9560309732</p>
                 <p className="text-[12px] mt-1">GSTIN : 09AAJCK3937A1ZL</p>
-                {payload.customer_gstin && <p className="text-[12px] mt-0.5 font-semibold">Buyer GSTIN: {payload.customer_gstin}</p>}
                 {type === 'BILL' && <p className="text-[12px] mt-1 font-bold">Tax Invoice</p>}
             </div>
 
@@ -53,8 +52,13 @@ export default function ReceiptTemplate({ type, payload }: ReceiptProps) {
             </div>
 
             <div className="text-xs mb-3 flex flex-col gap-0.5">
-                <div>Name: {payload.customer_name || 'Customer'}</div>
-                <div>Mobile: {payload.customer_mobile || ''}</div>
+                <div className="flex gap-2 flex-wrap">
+                    <span>Name: {payload.customer_name || 'Customer'}</span>
+                    {payload.customer_gstin && (
+                        <span className="font-semibold">| GSTIN: {payload.customer_gstin}</span>
+                    )}
+                </div>
+                {payload.customer_mobile && <div>Mobile: {payload.customer_mobile}</div>}
             </div>
 
             {/* Grid Header */}
@@ -80,13 +84,14 @@ export default function ReceiptTemplate({ type, payload }: ReceiptProps) {
             <div className="text-[10px] sm:text-[11px] mb-2 flex flex-col gap-1.5">
                 {payload.items.map((item: any, idx: number) => {
                     let qtyStr = '';
-                    if (item.selling_type === 'pc') {
+                    // Use stored selling_type & selling_qty if available (ensures piece billing looks right on reprint)
+                    if (item.selling_type === 'pc' && item.selling_qty != null) {
                         qtyStr = `${item.selling_qty} pc`;
+                    } else if (item.selling_type === 'kg' && item.selling_qty != null) {
+                        qtyStr = item.selling_qty >= 1000 ? `${(item.selling_qty / 1000).toFixed(2)} kg` : `${item.selling_qty} g`;
                     } else {
-                        qtyStr = item.selling_type === 'pc' ? `${item.selling_qty} pc` : (item.selling_qty >= 1000 ? `${(item.selling_qty / 1000).toFixed(2)} kg` : `${item.selling_qty} g`);
-                        if (!item.selling_type) {
-                            qtyStr = item.unit === 'pc' ? `${item.quantity_kg.toFixed(0)} pc` : (item.quantity_kg >= 1 ? `${item.quantity_kg.toFixed(2)} kg` : `${(item.quantity_kg * 1000).toFixed(0)} g`);
-                        }
+                        // Fallback for older records stored only with quantity_kg
+                        qtyStr = item.quantity_kg >= 1 ? `${item.quantity_kg.toFixed(2)} kg` : `${(item.quantity_kg * 1000).toFixed(0)} g`;
                     }
 
                     const amount = item.calculated_price;
