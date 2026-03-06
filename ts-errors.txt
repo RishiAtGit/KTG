@@ -1,0 +1,22 @@
+.next/dev/types/validator.ts(90,31): error TS2344: Type 'typeof import("C:/Users/HP/OneDrive/Desktop/KTG/sweet-shop/src/app/api/checkout/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/checkout">'.
+  The types returned by 'POST(...)' are incompatible between these types.
+    Type 'Promise<unknown>' is not assignable to type 'void | Response | Promise<void | Response>'.
+      Type 'Promise<unknown>' is not assignable to type 'Promise<void | Response>'.
+        Type 'unknown' is not assignable to type 'void | Response'.
+.next/dev/types/validator.ts(99,31): error TS2344: Type 'typeof import("C:/Users/HP/OneDrive/Desktop/KTG/sweet-shop/src/app/api/items/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/items/[id]">'.
+  Types of property 'DELETE' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; }; }) => Promise<NextResponse<{ success: boolean; }> | NextResponse<{ error: string; }>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(117,31): error TS2344: Type 'typeof import("C:/Users/HP/OneDrive/Desktop/KTG/sweet-shop/src/app/api/receipt-sequence/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/receipt-sequence">'.
+  The types returned by 'GET(...)' are incompatible between these types.
+    Type 'Promise<unknown>' is not assignable to type 'void | Response | Promise<void | Response>'.
+      Type 'Promise<unknown>' is not assignable to type 'Promise<void | Response>'.
+        Type 'unknown' is not assignable to type 'void | Response'.
+src/app/dashboard/page.tsx(116,45): error TS2322: Type '(value: number) => [string, "Revenue"]' is not assignable to type 'Formatter<number, "Revenue"> & ((value: number, name: "Revenue", item: Payload<number, "Revenue">, index: number, payload: Payload<number, "Revenue">[]) => ReactNode | [...])'.
+  Type '(value: number) => [string, "Revenue"]' is not assignable to type 'Formatter<number, "Revenue">'.
+    Types of parameters 'value' and 'value' are incompatible.
+      Type 'number | undefined' is not assignable to type 'number'.
+        Type 'undefined' is not assignable to type 'number'.
